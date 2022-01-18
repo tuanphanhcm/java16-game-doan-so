@@ -24,7 +24,7 @@ public class AuthFilter implements Filter {
 		
 		// code xử lý request trước khi vào servlet
 		String path = req.getServletPath();
-		if(!path.startsWith(UrlConst.PLAYER_LOGIN)) {
+		if(!(path.startsWith(UrlConst.PLAYER_LOGIN) || path.startsWith(UrlConst.PLAYER_REGISTER))) {
 			Object player = req.getSession().getAttribute("player");
 			if(player == null) {
 				resp.sendRedirect(req.getContextPath() + UrlConst.PLAYER_LOGIN);

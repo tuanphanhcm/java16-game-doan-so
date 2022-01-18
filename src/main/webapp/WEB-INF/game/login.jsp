@@ -12,7 +12,7 @@
 <body>
 	<div class="container">
 	    <h1 class="text-primary text-center">Game Đoán Số</h1>
-	    <form class="w-50" action="<%=request.getContextPath() + UrlConst.GAME_LOGIN %>" method="post" class="form-group">
+	    <form class="w-50" action="<%=request.getContextPath() + UrlConst.PLAYER_LOGIN %>" method="post" class="form-group">
 	      <label for="username">Username</label>
 	      <input type="text" class="form-control" name="username" id="username"
 	        placeholder="Enter username" value='${lastUsername == null ? "" : lastUsername }'>

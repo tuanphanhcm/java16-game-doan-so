@@ -36,35 +36,50 @@ public class PlayerServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Cookie[] cookies = req.getCookies();
-		String username = null;
-		
-		if(cookies != null) {
-			Optional<Cookie> usernameCookieOpt = Arrays.asList(cookies)
-					.stream()
-					.filter(t -> t.getName().equals("username"))
-					.findFirst();
-			if (usernameCookieOpt.isPresent()) {
-				username = usernameCookieOpt.get().getValue();
-			}
-		}
-		
-		if(username != null) {
-			req.setAttribute("lastUsername", username);
-		}
-		
-		req.getRequestDispatcher(JspConst.PLAYER_LOGIN)
+		switch (req.getServletPath()) {
+		case UrlConst.PLAYER_REGISTER:
+			req.getRequestDispatcher(JspConst.PLAYER_REGISTER)
 			.forward(req, resp);
+			break;
+			
+		case UrlConst.PLAYER_LOGIN:
+			Cookie[] cookies = req.getCookies();
+			String username = null;
+			
+			if(cookies != null) {
+				Optional<Cookie> usernameCookieOpt = Arrays.asList(cookies)
+						.stream()
+						.filter(t -> t.getName().equals("username"))
+						.findFirst();
+				if (usernameCookieOpt.isPresent()) {
+					username = usernameCookieOpt.get().getValue();
+				}
+			}
+			
+			if(username != null) {
+				req.setAttribute("lastUsername", username);
+			}
+			
+			req.getRequestDispatcher(JspConst.PLAYER_LOGIN)
+				.forward(req, resp);
+			break;
+		default:
+			resp.getWriter().append("Đi sai đường rồi anh êy!!!");
+			break;
+		}
+		
+		
 	}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String path = req.getServletPath();
+		String username, password, message;
 		
 		switch (path) {
 		case UrlConst.PLAYER_LOGIN:
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
+			username = req.getParameter("username");
+			password = req.getParameter("password");
 			
 			Optional<Player> curPlayerOpt = players.stream()
 				.filter(t -> t.getUsername().equals(username))
@@ -82,6 +97,16 @@ public class PlayerServlet extends HttpServlet {
 			break;
 			
 		case UrlConst.PLAYER_REGISTER:
+			username = req.getParameter("username");
+			password = req.getParameter("password");
+			String rPassword = req.getParameter("rPassword");
+			
+			boolean isExistedUsername = players.stream()
+											.anyMatch(t -> t.getUsername().equalsIgnoreCase(username));
+			
+			if(isExistedUsername) {
+				message = "Username is used.";
+			}
 			
 			break;
 
