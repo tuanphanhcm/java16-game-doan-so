@@ -12,8 +12,13 @@ public class MySQLConnection {
 	private static Connection connection;
 	
 	public static Connection getConnection() {
-		if (connection != null) {
-			return connection;
+		try {
+			if (connection != null && !connection.isClosed()) {
+				return connection;
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		try {

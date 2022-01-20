@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.catalina.Session;
 
 import cybersoft.javabackend.gamedoanso.model.Player;
+import cybersoft.javabackend.gamedoanso.service.PlayerService;
 import cybersoft.javabackend.gamedoanso.service.StoreService;
 import cybersoft.javabackend.gamedoanso.util.JspConst;
 import cybersoft.javabackend.gamedoanso.util.UrlConst;
@@ -25,13 +26,12 @@ import cybersoft.javabackend.gamedoanso.util.UrlConst;
 		UrlConst.PLAYER_REGISTER
 })
 public class PlayerServlet extends HttpServlet {
-	private List<Player> players;
+	private PlayerService service;
 	
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		players = StoreService.players;
-		players.add(new Player("admin", "123"));
+		service = new PlayerService();
 	}
 	
 	@Override
@@ -78,21 +78,21 @@ public class PlayerServlet extends HttpServlet {
 		
 		switch (path) {
 		case UrlConst.PLAYER_LOGIN:
-			username = req.getParameter("username");
-			password = req.getParameter("password");
-			
-			Optional<Player> curPlayerOpt = players.stream()
-				.filter(t -> t.getUsername().equals(username))
-				.filter(t -> t.getPassword().equals(password))
-				.findFirst();
-			
-			if(curPlayerOpt.isPresent()) {
-				HttpSession session = req.getSession(); 
-				session.setAttribute("player", curPlayerOpt.get());
-				resp.sendRedirect(req.getContextPath() + UrlConst.GAME_ROOT);
-			} else {
-				resp.sendRedirect(req.getContextPath() + UrlConst.PLAYER_LOGIN);
-			}
+//			username = req.getParameter("username");
+//			password = req.getParameter("password");
+//			
+////			Optional<Player> curPlayerOpt = players.stream()
+////				.filter(t -> t.getUsername().equals(username))
+////				.filter(t -> t.getPassword().equals(password))
+////				.findFirst();
+//			
+//			if(curPlayerOpt.isPresent()) {
+//				HttpSession session = req.getSession(); 
+//				session.setAttribute("player", curPlayerOpt.get());
+//				resp.sendRedirect(req.getContextPath() + UrlConst.GAME_ROOT);
+//			} else {
+//				resp.sendRedirect(req.getContextPath() + UrlConst.PLAYER_LOGIN);
+//			}
 			
 			break;
 			
@@ -101,12 +101,19 @@ public class PlayerServlet extends HttpServlet {
 			password = req.getParameter("password");
 			String rPassword = req.getParameter("rPassword");
 			
-			boolean isExistedUsername = players.stream()
-											.anyMatch(t -> t.getUsername().equalsIgnoreCase(username));
+//			boolean isExistedUsername = players.stream()
+//											.anyMatch(t -> t.getUsername().equalsIgnoreCase(username));
 			
-			if(isExistedUsername) {
-				message = "Username is used.";
-			}
+//			if(isExistedUsername) {
+//				message = "Username is used.";
+//			}
+			
+			Player player = new Player();
+			player.setUsername(username);
+			player.setName("Tuan Dep Trai");
+			player.setPassword(password);
+			
+			service.save(player);
 			
 			break;
 
